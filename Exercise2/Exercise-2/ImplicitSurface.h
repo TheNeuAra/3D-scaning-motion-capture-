@@ -80,13 +80,15 @@ public:
     Eigen::Vector3f x = Eigen::Vector3f((float)_x.x(), (float)_x.y(), (float)_x.z());
     unsigned int idx = m_pointcloud.GetClosestPoint(x);
     if (idx == m_pointcloud.GetPoints().size()) {
-        return std::numeric_limits<double>::max();
+       // return std::numeric_limits<double>::max();
+	return 0.0;
     }
 	//std::cout << "done getting point cloud" << std::endl;
     Eigen::Vector3f p = m_pointcloud.GetPoints()[idx];
     Eigen::Vector3f n = m_pointcloud.GetNormals()[idx];
 	//std::cout << "calculating result..." << std::endl;
-    return (x - p).dot(n);  // dot 返回的是 float，自动转换为 double
+    //return (x - p).dot(n);  // dot 返回的是 float，自动转换为 double
+	return(_x - p.cast<double>()).dot(n.cast<double>());
 	}
 
 private:
@@ -154,13 +156,17 @@ public:
    		for (unsigned int i = 0; i < m_numCenters; ++i)
    		{
      		   // 计算当前点与第 i 个中心点之间的欧氏距离
-      		double distance = (_x - m_funcSamp.m_pos[i]).norm();
+      		//double distance = (_x - m_funcSamp.m_pos[i]).norm();
 
       		  // 使用 EvalBasis 计算径向基函数值
-       		double basisValue = EvalBasis(distance);
+       		//double basisValue = EvalBasis(distance);
 
        		 // 将核函数的贡献加入结果，使用系数 m_coefficents[i]
-        		result += m_coefficents[i] * basisValue;
+        		//result += m_coefficents[i] * basisValue;
+			result += EvalBasis((m_funcSamp.pos[i] - _x).norm()) * m_coefficents[i];
+
+    			result += m_coefficents.tail(4).dot(Eigen::Vector4d(_x.x(), _x.y(), _x.z(), 1.0));
+    			return result;
     	}
 
     	// 添加线性部分和常数项
