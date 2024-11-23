@@ -1,0 +1,3 @@
+/config/workspace/Exercise2/Exercise-2/build/CMakeFiles/exercise_2.dir
+/config/workspace/Exercise2/Exercise-2/build/CMakeFiles/edit_cache.dir
+/config/workspace/Exercise2/Exercise-2/build/CMakeFiles/rebuild_cache.dir
